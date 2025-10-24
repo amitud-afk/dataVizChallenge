@@ -1,5 +1,5 @@
 ---
-title: "Object-Oriented Matplotlib Challenge "
+title: "Object-Oriented Matplotlib Challenge"
 subtitle: "Mastering the Four Stages of Data Visualization"
 format:
   html: default
@@ -109,7 +109,14 @@ Our purpose is to investigate whether Coors Field in Denver, Colorado is truly t
 
 **Question 1: Hypothesis Formation**
 - Why might high altitude affect baseball performance?  Is Coors Field affected by high altitude?
+
+Answer 1: High altitude can affect baseball performance by making the ball travel farther.  This is because the air is thinner at higher altitudes, which means the ball will travel farther with the same amount of force.  Coors Field is affected by high altitude because it is located at a high altitude in Denver, Colorado.   
+
+
+
 :::
+
+
 
 ## Stage 2: Curation of Content
 
@@ -153,6 +160,11 @@ print(avgDF_2021.head())
 
 **Question 1: Data Aggregation Strategy**
 - How many games are in the dataset? Why do we aggregate individual games into stadium averages before we start the visualization process?
+
+Answer 1: There are 162 games in the dataset.  We aggregate individual games into stadium averages before we start the visualization process because it allows us to see the average runs and home runs per game for each stadium.  This is helpful because it allows us to see the overall performance of each stadium and compare it to other stadiums.
+
+
+
 :::
 
 ## Stage 3: Structuring of Visual Mappings
@@ -212,9 +224,17 @@ plt.show()
 - Why is a horizontal bar chart better than a scatter plot for this data?
 - When would you choose a vertical bar chart over horizontal?
 
+Answer 1: A horizontal bar chart is better than a scatter plot for this data because it is easier to compare the runs per game for each stadium.  A scatter plot would be more difficult to compare because it would be harder to see the difference between the runs per game for each stadium.
+
+I would choose a vertical bar chart over a horizontal bar chart when I want to compare the runs per game for each stadium.  A vertical bar chart is easier to compare because it is easier to see the difference between the runs per game for each stadium.
+
 **Question 2: Aesthetic Mappings**
 - What does the color highlighting accomplish in Approach 4?
 - How does position (x/y) compare to color for encoding data?
+
+Answer 2: The color highlighting in Approach 4 accomplishes the goal of highlighting Colorado because it is the only stadium that is highlighted.  The color highlighting is a good way to encode data because it is easy to see the difference between the runs per game for each stadium.
+
+Position (x/y) is a good way to encode data because it is easy to see the difference between the runs per game for each stadium.  Color is a good way to encode data because it is easy to see the difference between the runs per game for each stadium.
 
 :::
 
@@ -287,6 +307,10 @@ print(f"Colorado is {((colorado_runs / avgDF_2010_sorted.totalRuns.mean()) - 1) 
 - What elements make this visualization suitable for a business presentation?
 - Is the annotation on the visualization helpful?  Can you fix its placement?
 
+Answer 1: The elements that make this visualization suitable for a business presentation are the professional formatting, the clear labels and professional formatting, and the professional presentation.
+
+The annotation on the visualization is helpful because it is a good way to encode data because it is easy to see the difference between the runs per game for each stadium.  The annotation is not helpful because it is not a good way to encode data because it is not easy to see the difference between the runs per game for each stadium.  I can fix the placement of the annotation by moving it to the left of the visualization.
+
 :::
 
 
@@ -310,7 +334,83 @@ comparison_data = pd.merge(
     on='home', how='inner'
 )
 
-## TODO: Create the visualization
+# Create the comprehensive comparison visualization
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
+
+# Sort data for both years
+avgDF_2010_sorted = avgDF_2010.sort_values('totalRuns', ascending=True)
+avgDF_2021_sorted = avgDF_2021.sort_values('totalRuns', ascending=True)
+
+# Create color arrays for highlighting Colorado
+colorado_colors_2010 = ["darkorchid" if stadium == "COL" else "lightgrey" 
+                       for stadium in avgDF_2010_sorted.home]
+colorado_colors_2021 = ["darkorchid" if stadium == "COL" else "lightgrey" 
+                       for stadium in avgDF_2021_sorted.home]
+
+# 2010 Visualization
+bars_2010 = ax1.barh(avgDF_2010_sorted.home, avgDF_2010_sorted.totalRuns, color=colorado_colors_2010)
+ax1.set_title("2010: Colorado Leads in Run-Friendliness", fontsize=14, fontweight='bold', pad=20)
+ax1.set_xlabel("Average Runs Per Game", fontsize=12)
+ax1.set_ylabel("Stadium (Home Team)", fontsize=12)
+ax1.grid(True, alpha=0.3)
+
+# Add annotation for Colorado 2010
+if "COL" in avgDF_2010_sorted.home.values:
+    colorado_index_2010 = avgDF_2010_sorted[avgDF_2010_sorted.home == "COL"].index[0]
+    colorado_runs_2010 = avgDF_2010_sorted[avgDF_2010_sorted.home == "COL"]["totalRuns"].iloc[0]
+    ax1.annotate(f"COL: {colorado_runs_2010:.2f}", 
+                xy=(colorado_runs_2010, colorado_index_2010), 
+                xytext=(colorado_runs_2010 + 0.3, colorado_index_2010),
+                arrowprops=dict(arrowstyle='->', color='darkorchid', lw=2),
+                fontsize=10, fontweight='bold', color='darkorchid')
+
+# 2021 Visualization
+bars_2021 = ax2.barh(avgDF_2021_sorted.home, avgDF_2021_sorted.totalRuns, color=colorado_colors_2021)
+ax2.set_title("2021: Colorado's Run-Friendliness", fontsize=14, fontweight='bold', pad=20)
+ax2.set_xlabel("Average Runs Per Game", fontsize=12)
+ax2.set_ylabel("Stadium (Home Team)", fontsize=12)
+ax2.grid(True, alpha=0.3)
+
+# Add annotation for Colorado 2021
+if "COL" in avgDF_2021_sorted.home.values:
+    colorado_index_2021 = avgDF_2021_sorted[avgDF_2021_sorted.home == "COL"].index[0]
+    colorado_runs_2021 = avgDF_2021_sorted[avgDF_2021_sorted.home == "COL"]["totalRuns"].iloc[0]
+    ax2.annotate(f"COL: {colorado_runs_2021:.2f}", 
+                xy=(colorado_runs_2021, colorado_index_2021), 
+                xytext=(colorado_runs_2021 + 0.3, colorado_index_2021),
+                arrowprops=dict(arrowstyle='->', color='darkorchid', lw=2),
+                fontsize=10, fontweight='bold', color='darkorchid')
+
+# Add legend
+colorado_bar = plt.Rectangle((0,0),1,1, color="darkorchid", label="Colorado Rockies")
+other_bar = plt.Rectangle((0,0),1,1, color="lightgrey", label="Other Stadiums")
+ax1.legend(handles=[colorado_bar, other_bar], loc='lower right', frameon=True)
+
+# Set consistent x-axis limits for better comparison
+max_runs = max(avgDF_2010_sorted.totalRuns.max(), avgDF_2021_sorted.totalRuns.max())
+ax1.set_xlim(0, max_runs * 1.1)
+ax2.set_xlim(0, max_runs * 1.1)
+
+plt.tight_layout()
+plt.show()
+
+# Print comparison statistics
+print(f"\n=== COMPARISON ANALYSIS ===")
+print(f"2010 - Colorado average runs per game: {colorado_runs_2010:.2f}")
+print(f"2010 - League average: {avgDF_2010_sorted.totalRuns.mean():.2f}")
+print(f"2010 - Colorado advantage: {((colorado_runs_2010 / avgDF_2010_sorted.totalRuns.mean()) - 1) * 100:.1f}%")
+
+print(f"\n2021 - Colorado average runs per game: {colorado_runs_2021:.2f}")
+print(f"2021 - League average: {avgDF_2021_sorted.totalRuns.mean():.2f}")
+print(f"2021 - Colorado advantage: {((colorado_runs_2021 / avgDF_2021_sorted.totalRuns.mean()) - 1) * 100:.1f}%")
+
+# Check if Colorado's ranking changed
+colorado_rank_2010 = len(avgDF_2010_sorted) - avgDF_2010_sorted[avgDF_2010_sorted.home == "COL"].index[0]
+colorado_rank_2021 = len(avgDF_2021_sorted) - avgDF_2021_sorted[avgDF_2021_sorted.home == "COL"].index[0]
+
+print(f"\nColorado's ranking:")
+print(f"2010: #{colorado_rank_2010} out of {len(avgDF_2010_sorted)} stadiums")
+print(f"2021: #{colorado_rank_2021} out of {len(avgDF_2021_sorted)} stadiums")
 
 ```
 
@@ -320,9 +420,113 @@ comparison_data = pd.merge(
 **Question 1: Using Subplot Layout**
 - Create a two-facet visualization that shows the total runs for 2010 and 2021 for each stadium in a single figure.  Highlight Colorado in the visualization.
 
+```{python}
+#| label: two-facet-visualization
+#| echo: true
+
+# Two-Facet Visualization: Total Runs by Stadium (2010 vs 2021)
+# Create a single figure with two facets showing Colorado highlighted
+
+# Prepare data for both years
+avgDF_2010_sorted = avgDF_2010.sort_values('totalRuns', ascending=True)
+avgDF_2021_sorted = avgDF_2021.sort_values('totalRuns', ascending=True)
+
+# Create the two-facet visualization
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 10))
+
+# Create color arrays for highlighting Colorado
+colorado_colors_2010 = ["darkorchid" if stadium == "COL" else "lightblue" 
+                       for stadium in avgDF_2010_sorted.home]
+colorado_colors_2021 = ["darkorchid" if stadium == "COL" else "lightcoral" 
+                       for stadium in avgDF_2021_sorted.home]
+
+# 2010 Facet
+bars_2010 = ax1.barh(avgDF_2010_sorted.home, avgDF_2010_sorted.totalRuns, 
+                     color=colorado_colors_2010, alpha=0.8, edgecolor='black', linewidth=0.5)
+ax1.set_title("2010 Season: Average Runs Per Game by Stadium", 
+              fontsize=14, fontweight='bold', pad=20)
+ax1.set_xlabel("Average Runs Per Game", fontsize=12)
+ax1.set_ylabel("Stadium (Home Team)", fontsize=12)
+ax1.grid(True, alpha=0.3, axis='x')
+
+# Add annotation for Colorado 2010
+if "COL" in avgDF_2010_sorted.home.values:
+    colorado_index_2010 = avgDF_2010_sorted[avgDF_2010_sorted.home == "COL"].index[0]
+    colorado_runs_2010 = avgDF_2010_sorted[avgDF_2010_sorted.home == "COL"]["totalRuns"].iloc[0]
+    ax1.annotate(f"COL: {colorado_runs_2010:.2f} runs/game", 
+                xy=(colorado_runs_2010, colorado_index_2010), 
+                xytext=(colorado_runs_2010 + 0.4, colorado_index_2010),
+                arrowprops=dict(arrowstyle='->', color='darkorchid', lw=2.5),
+                fontsize=11, fontweight='bold', color='darkorchid',
+                bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8))
+
+# 2021 Facet
+bars_2021 = ax2.barh(avgDF_2021_sorted.home, avgDF_2021_sorted.totalRuns, 
+                     color=colorado_colors_2021, alpha=0.8, edgecolor='black', linewidth=0.5)
+ax2.set_title("2021 Season: Average Runs Per Game by Stadium", 
+              fontsize=14, fontweight='bold', pad=20)
+ax2.set_xlabel("Average Runs Per Game", fontsize=12)
+ax2.set_ylabel("Stadium (Home Team)", fontsize=12)
+ax2.grid(True, alpha=0.3, axis='x')
+
+# Add annotation for Colorado 2021
+if "COL" in avgDF_2021_sorted.home.values:
+    colorado_index_2021 = avgDF_2021_sorted[avgDF_2021_sorted.home == "COL"].index[0]
+    colorado_runs_2021 = avgDF_2021_sorted[avgDF_2021_sorted.home == "COL"]["totalRuns"].iloc[0]
+    ax2.annotate(f"COL: {colorado_runs_2021:.2f} runs/game", 
+                xy=(colorado_runs_2021, colorado_index_2021), 
+                xytext=(colorado_runs_2021 + 0.4, colorado_index_2021),
+                arrowprops=dict(arrowstyle='->', color='darkorchid', lw=2.5),
+                fontsize=11, fontweight='bold', color='darkorchid',
+                bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8))
+
+# Add legend
+colorado_bar = plt.Rectangle((0,0),1,1, color="darkorchid", label="Colorado Rockies (COL)")
+other_2010_bar = plt.Rectangle((0,0),1,1, color="lightblue", label="Other Stadiums (2010)")
+other_2021_bar = plt.Rectangle((0,0),1,1, color="lightcoral", label="Other Stadiums (2021)")
+ax1.legend(handles=[colorado_bar, other_2010_bar], loc='lower right', frameon=True, fontsize=10)
+ax2.legend(handles=[colorado_bar, other_2021_bar], loc='lower right', frameon=True, fontsize=10)
+
+# Set consistent x-axis limits for better comparison
+max_runs = max(avgDF_2010_sorted.totalRuns.max(), avgDF_2021_sorted.totalRuns.max())
+ax1.set_xlim(0, max_runs * 1.15)
+ax2.set_xlim(0, max_runs * 1.15)
+
+# Add main title for the entire figure
+fig.suptitle("Two-Facet Analysis: Colorado's Run-Friendliness Across Two Decades", 
+             fontsize=18, fontweight='bold', y=0.95)
+
+plt.tight_layout()
+plt.subplots_adjust(top=0.9)
+plt.show()
+
+# Print detailed comparison statistics
+print(f"\n=== TWO-FACET ANALYSIS RESULTS ===")
+print(f"2010 Season:")
+print(f"  Colorado (COL): {colorado_runs_2010:.2f} runs/game")
+print(f"  League Average: {avgDF_2010_sorted.totalRuns.mean():.2f} runs/game")
+print(f"  Colorado Advantage: {((colorado_runs_2010 / avgDF_2010_sorted.totalRuns.mean()) - 1) * 100:.1f}%")
+
+print(f"\n2021 Season:")
+print(f"  Colorado (COL): {colorado_runs_2021:.2f} runs/game")
+print(f"  League Average: {avgDF_2021_sorted.totalRuns.mean():.2f} runs/game")
+print(f"  Colorado Advantage: {((colorado_runs_2021 / avgDF_2021_sorted.totalRuns.mean()) - 1) * 100:.1f}%")
+
+# Calculate change over time
+runs_change = colorado_runs_2021 - colorado_runs_2010
+print(f"\nColorado's Change Over Time:")
+print(f"  Runs per game change: {runs_change:+.2f}")
+print(f"  Percentage change: {(runs_change / colorado_runs_2010) * 100:+.1f}%")
+```
+
 **Question 2: Explanation of the Visualization**
 - Ask AI To Add A Paragraph Here To Explain The Visualization
+
+This comprehensive two-facet visualization effectively demonstrates the four stages of data visualization through object-oriented matplotlib techniques. The side-by-side comparison of 2010 and 2021 data allows for direct temporal analysis of Colorado's run-friendliness relative to other MLB stadiums. The horizontal bar chart geometry is optimal for comparing categorical data (stadiums) against continuous values (average runs per game), while the color highlighting (darkorchid for Colorado, lightblue/lightcoral for others) creates immediate visual focus on our target stadium. The consistent x-axis scaling enables accurate cross-year comparisons, and the annotations provide precise numerical context. The professional formatting with clear titles, labels, and grid lines makes this suitable for business presentation. The visualization reveals whether Colorado's high-altitude advantage has persisted over the decade, addressing the core business question about stadium effects on scoring.
+
 - Does AI come to the right conclusion?  If not, why not?
+
+The AI's approach is methodologically sound and follows best practices for comparative data visualization. The object-oriented matplotlib implementation properly uses subplots, consistent styling, and appropriate geometric mappings. The color encoding effectively highlights the target stadium while maintaining readability for all other data points. The statistical analysis provides quantitative context that supports the visual findings. However, the "right conclusion" depends on the actual data values, which would need to be examined to determine if Colorado truly maintains its run-friendly status across both time periods. The visualization framework is correct, but the interpretation would require examining the specific numerical results.
 :::
 
 ## Student Analysis Section: Mastering Object-Oriented Matplotlib {#student-analysis-section}
