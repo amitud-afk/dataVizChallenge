@@ -1,5 +1,5 @@
 ---
-title: "Object-Oriented Matplotlib Challenge"
+title: "Object-Oriented Matplotlib Challenge "
 subtitle: "Mastering the Four Stages of Data Visualization"
 format:
   html: default
